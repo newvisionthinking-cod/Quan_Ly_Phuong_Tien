@@ -236,22 +236,31 @@
   </div>
 
   <script>
-    // ==============================================================
-    // LINK WEB APP APPS SCRIPT CỦA BẠN (ĐÃ ĐIỀN TỰ ĐỘNG)
-    // ==============================================================
     const API_URL = "https://script.google.com/macros/s/AKfycbw7B0be9N10BgcfAtTX6E-13cZB9JiP6RDC77ZoIqasPEEfpee-4bpc-sPBxuquJTEd/exec";
 
     let vehiclesList = [];
     let expensesList = [];
 
+    // GỌI BACKEND BẰNG FORM-DATA ĐỂ TRÁNH BỊ GOOGLE TRẢ VỀ HTML ĐĂNG NHẬP / LỖI CORS
     async function callBackend(action, payload = {}) {
+      const formData = new URLSearchParams();
+      formData.append("action", action);
+      formData.append("payload", JSON.stringify(payload));
+
       const response = await fetch(API_URL, {
         method: "POST",
-        redirect: "follow",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: action, payload: payload })
+        body: formData
       });
-      return await response.json();
+
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        if (text.includes("<!DOCTYPE") || text.includes("<html")) {
+          throw new Error("Google Apps Script đang yêu cầu đăng nhập. Hãy kiểm tra mục 'Who has access' trong Apps Script đã đặt là 'Anyone' chưa.");
+        }
+        throw new Error("Phản hồi không phải JSON: " + text.substring(0, 100));
+      }
     }
 
     window.onload = function() { loadData(); };
@@ -278,7 +287,7 @@
       try {
         const res = await callBackend("getInitialData");
         if (res.success) {
-          vehiclesList = res.vehicles;
+          vehiclesList = res.vehicles || [];
           expensesList = res.expenses || [];
           renderVehicles(vehiclesList);
           renderAlerts(res.alerts);
@@ -288,7 +297,7 @@
           alert("Lỗi dữ liệu: " + res.error);
         }
       } catch (err) {
-        alert("Không thể kết nối Backend: " + err.message);
+        alert("Không thể kết nối Backend:\n" + err.message);
       }
     }
 
@@ -527,7 +536,7 @@
       } catch (err) {
         btn.disabled = false;
         btn.innerText = "Tạo xe";
-        alert("Không thể gửi dữ liệu: " + err.message);
+        alert("Lỗi: " + err.message);
       }
     }
 
