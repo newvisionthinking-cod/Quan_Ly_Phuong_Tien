@@ -1,228 +1,203 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full">
+<html lang="vi" class="h-full bg-slate-100">
 <head>
   <meta charset="UTF-8">
-  <title>AutoTracker • Garage Cá Nhân</title>
+  <title>Sổ Quản Lý Xe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <!-- Tailwind CSS & Google Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-            },
-            dark: {
-              900: '#0b0f19',
-              800: '#111827',
-              700: '#1f2937',
-              600: '#374151'
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body {
-      background-color: #0b0f19;
-      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-    .glass-card {
-      background: rgba(17, 24, 39, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .mono-font {
+      font-family: 'JetBrains Mono', monospace;
     }
-    .glow-indigo {
-      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+    .card-shadow {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
     }
-    .glow-cyan {
-      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.3);
+    .btn-gradient {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     }
-    /* Tùy biến thanh cuộn */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
+    .btn-gradient:active {
+      background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    }
   </style>
 </head>
-<body class="h-full flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+<body class="h-full flex flex-col bg-slate-100 text-slate-800 antialiased">
 
-  <!-- TOP APP BAR -->
-  <header class="glass-card sticky top-0 z-40 px-4 py-3 border-b border-slate-800/80">
+  <!-- TOP APP BAR TRẮNG SÁNG -->
+  <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 px-4 py-3 border-b border-slate-200">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <i class="fa-solid fa-gauge-high text-white text-sm"></i>
+        <div class="w-9 h-9 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+          <i class="fa-solid fa-car-side text-sm"></i>
         </div>
         <div>
-          <span class="text-[10px] uppercase font-bold tracking-widest text-indigo-400 block -mb-0.5">Garage Cá Nhân</span>
-          <span class="text-base font-extrabold text-white tracking-tight">AutoTracker<span class="text-indigo-400 font-mono text-xs ml-1">AI</span></span>
+          <h1 class="text-base font-extrabold text-slate-900 tracking-tight">Sổ Xe Thông Minh</h1>
+          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Trợ lý cá nhân AI</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <button onclick="openAddVehicleModal()" class="px-3 py-1.5 rounded-lg bg-indigo-600/20 border border-indigo-500/40 text-indigo-300 hover:bg-indigo-600/30 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95">
+        <button onclick="openAddVehicleModal()" class="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold flex items-center gap-1.5 transition active:scale-95 border border-blue-100">
           <i class="fa-solid fa-plus text-[10px]"></i> Thêm xe
         </button>
-        <button onclick="loadData()" class="w-8 h-8 rounded-lg glass-card flex items-center justify-center text-slate-400 hover:text-white transition active:rotate-180" title="Đồng bộ">
-          <i class="fa-solid fa-arrows-rotate text-xs"></i>
+        <button onclick="loadData()" class="w-8 h-8 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 transition active:rotate-180" title="Đồng bộ">
+          <i class="fa-solid fa-rotate-right text-xs"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- NỘI DUNG CHÍNH (CUỘN ĐỘC LẬP) -->
-  <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4 overflow-y-auto">
+  <!-- NỘI DUNG CUỘN CHÍNH -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 space-y-4 overflow-y-auto pb-24">
 
-    <!-- CẢNH BÁO THÔNG MINH (BANNER) -->
+    <!-- CẢNH BÁO HẠN ĐĂNG KIỂM / BẢO DƯỠNG -->
     <div id="alertsContainer" class="space-y-2 hidden"></div>
 
-    <!-- ==================== TAB 1: NHẬP LIỆU & ODO ==================== -->
+    <!-- ==================== TAB 1: CẬP NHẬT ODO & CHI PHÍ ==================== -->
     <div id="tabRecordSection" class="space-y-4">
       
-      <!-- VEHICLE SELECTOR CARD (HIỂN THỊ DẠNG TAPLO HIỆN ĐẠI) -->
-      <div class="glass-card rounded-2xl p-4 relative overflow-hidden">
-        <!-- Vòng sáng trang trí nền -->
-        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-indigo-600/10 rounded-full blur-2xl pointer-events-none"></div>
+      <!-- THẺ XE (VEHICLE CARD) PHONG CÁCH APPLE WALLET -->
+      <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 border border-slate-200/80 card-shadow relative overflow-hidden">
+        <!-- Vòng trang trí góc phải -->
+        <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-blue-500/5 rounded-full pointer-events-none"></div>
 
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Phương tiện điều khiển</span>
-          <span id="vehicleTypeBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">Đang tải...</span>
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Xe đang chọn</span>
+          <span id="vehicleTypeBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+            Đang tải...
+          </span>
         </div>
 
-        <div class="relative mb-3">
-          <select id="vehicleSelect" onchange="onVehicleChange()" class="w-full bg-dark-800/90 text-white font-bold text-sm rounded-xl px-3.5 py-3 border border-slate-700/80 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none appearance-none cursor-pointer">
-            <option value="">Đang kết nối garage...</option>
+        <!-- Menu chọn xe -->
+        <div class="relative mb-4">
+          <select id="vehicleSelect" onchange="onVehicleChange()" class="w-full bg-white text-slate-900 font-bold text-base rounded-2xl px-4 py-3 border border-slate-200 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none appearance-none cursor-pointer">
+            <option value="">Đang kết nối danh sách xe...</option>
           </select>
-          <i class="fa-solid fa-chevron-down absolute right-3.5 top-4 text-xs text-slate-400 pointer-events-none"></i>
+          <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-xs text-slate-400 pointer-events-none"></i>
         </div>
 
-        <!-- ODO METER DISPLAY -->
-        <div class="bg-dark-900/80 rounded-xl p-3 border border-slate-800/80 flex items-center justify-between">
+        <!-- Đồng hồ hiển thị ODO lớn -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-inner flex items-center justify-between">
           <div>
-            <span class="text-[10px] uppercase font-semibold text-slate-400 block">Số ODO hiện tại</span>
+            <span class="text-[11px] font-semibold text-slate-400 block">Số ODO hiện tại</span>
             <div class="flex items-baseline gap-1 mt-0.5">
-              <span id="currentOdoDisplay" class="font-mono text-2xl font-bold tracking-tight text-white">0</span>
-              <span class="text-[11px] font-bold text-indigo-400 font-mono">KM</span>
+              <span id="currentOdoDisplay" class="mono-font text-3xl font-extrabold text-slate-900">0</span>
+              <span class="text-xs font-bold text-blue-600 mono-font">KM</span>
             </div>
           </div>
           <div class="text-right">
-            <span id="fuelModeLabel" class="text-[10px] uppercase font-semibold text-slate-400 block">Nhiên liệu</span>
-            <span id="fuelModeValue" class="text-xs font-bold text-emerald-400 flex items-center justify-end gap-1 mt-1">
+            <span class="text-[11px] font-semibold text-slate-400 block">Nhiên liệu</span>
+            <span id="fuelModeValue" class="text-xs font-extrabold text-emerald-600 flex items-center justify-end gap-1.5 mt-1.5">
               <i class="fa-solid fa-bolt"></i> EV
             </span>
           </div>
         </div>
       </div>
 
-      <!-- AI VISION SCANNER (NÚT CHỤP ODO) -->
-      <div class="glass-card rounded-2xl p-4 border border-indigo-500/20 relative">
+      <!-- KHỐI CHỤP ẢNH ODO BẰNG GEMINI -->
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow">
         <div class="flex items-center justify-between mb-3">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Gemini Vision AI</span>
+            <div class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></div>
+            <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wider">Đọc ODO bằng AI</span>
           </div>
-          <span class="text-[10px] text-slate-400">Tự động đọc số công-tơ-mét</span>
+          <span class="text-[11px] font-medium text-slate-400">Gemini 2.5 Flash</span>
         </div>
 
+        <!-- 2 input file ẩn -->
         <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelected(this)">
         <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleFileSelected(this)">
 
         <div class="grid grid-cols-2 gap-3">
-          <button onclick="triggerCamera()" class="group relative overflow-hidden rounded-xl p-3.5 bg-gradient-to-br from-indigo-600 to-indigo-700 hover:to-indigo-600 text-white font-semibold text-xs flex flex-col items-center justify-center gap-2 glow-indigo active:scale-95 transition">
-            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm group-hover:scale-110 transition">
-              <i class="fa-solid fa-camera"></i>
+          <button onclick="triggerCamera()" class="p-3.5 rounded-2xl bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-xs flex flex-col items-center justify-center gap-1.5 border border-blue-200/60 transition active:scale-95">
+            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
+              <i class="fa-solid fa-camera text-sm"></i>
             </div>
             <span>Chụp ODO ngay</span>
           </button>
-          <button onclick="triggerGallery()" class="group rounded-xl p-3.5 bg-dark-800 hover:bg-dark-700 text-slate-200 border border-slate-700 font-semibold text-xs flex flex-col items-center justify-center gap-2 active:scale-95 transition">
-            <div class="w-8 h-8 rounded-full bg-slate-700/50 flex items-center justify-center text-sm group-hover:scale-110 transition">
-              <i class="fa-solid fa-images"></i>
+          
+          <button onclick="triggerGallery()" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs flex flex-col items-center justify-center gap-1.5 border border-slate-200 transition active:scale-95">
+            <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-600 flex items-center justify-center shadow-sm">
+              <i class="fa-solid fa-images text-sm"></i>
             </div>
-            <span>Chọn từ ảnh có sẵn</span>
+            <span>Chọn từ thư viện</span>
           </button>
         </div>
 
-        <!-- AI Status & Preview -->
-        <div id="aiStatus" class="mt-3 hidden text-center text-xs py-2.5 px-3 rounded-xl bg-indigo-950/60 border border-indigo-500/30 text-indigo-300"></div>
+        <!-- Trạng thái đọc ảnh & Preview -->
+        <div id="aiStatus" class="mt-3 hidden text-center text-xs py-2.5 px-3 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 font-medium"></div>
         <div id="imagePreviewContainer" class="mt-3 hidden flex justify-center">
-          <img id="imagePreview" class="h-28 rounded-xl border border-slate-700 object-cover shadow-lg">
+          <img id="imagePreview" class="h-28 rounded-2xl border border-slate-200 object-cover shadow-md">
         </div>
       </div>
 
-      <!-- NHẬP LIỆU ODO & CHI PHÍ -->
-      <div class="glass-card rounded-2xl p-4 space-y-3.5">
+      <!-- FORM NHẬP ODO & CHI PHÍ -->
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow space-y-4">
         <div>
-          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Số ODO mới</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Số ODO mới</label>
           <div class="relative">
-            <input type="number" id="odoInput" placeholder="Ví dụ: 45200" class="w-full bg-dark-800/90 border border-slate-700 rounded-xl p-3 text-white font-mono text-base font-bold focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-            <span class="absolute right-3.5 top-3.5 text-xs text-slate-500 font-mono font-semibold">KM</span>
+            <input type="number" id="odoInput" placeholder="VD: 45200" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-slate-900 mono-font text-base font-bold focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition">
+            <span class="absolute right-4 top-4 text-xs font-bold text-slate-400 mono-font">KM</span>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Hạng mục</label>
-            <select id="categorySelect" class="w-full bg-dark-800/90 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none font-medium">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Hạng mục</label>
+            <select id="categorySelect" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-800 font-semibold focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition">
             </select>
           </div>
           <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Số tiền</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Số tiền</label>
             <div class="relative">
-              <input type="number" id="amountInput" placeholder="0" class="w-full bg-dark-800/90 border border-slate-700 rounded-xl p-3 text-xs font-mono font-bold text-white focus:border-indigo-500 focus:outline-none">
-              <span class="absolute right-3 top-3 text-[10px] text-slate-500 font-semibold">đ</span>
+              <input type="number" id="amountInput" placeholder="0" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs mono-font font-bold text-slate-900 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition">
+              <span class="absolute right-3.5 top-3.5 text-[11px] font-bold text-slate-400">đ</span>
             </div>
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Ghi chú hành trình / bảo dưỡng</label>
-          <input type="text" id="noteInput" placeholder="VD: Đổ 25L xăng RON 95-V, bảo dưỡng thay lọc nhớt..." class="w-full bg-dark-800/90 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Ghi chú (nếu có)</label>
+          <input type="text" id="noteInput" placeholder="VD: Đổ đầy bình xăng 95, sạc điện tại nhà..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition">
         </div>
 
-        <button id="saveBtn" onclick="saveData()" class="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-600/25 active:scale-98 transition flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-          <i class="fa-solid fa-floppy-disk text-sm"></i> Lưu Bản Ghi Mới
+        <button id="saveBtn" onclick="saveData()" class="w-full btn-gradient text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/25 active:scale-98 transition flex items-center justify-center gap-2 text-sm tracking-wide">
+          <i class="fa-solid fa-check"></i> Lưu Cập Nhật
         </button>
       </div>
 
     </div>
 
-    <!-- ==================== TAB 2: DASHBOARD & LỊCH BIỂU ==================== -->
+    <!-- ==================== TAB 2: DASHBOARD & THỐNG KÊ ==================== -->
     <div id="tabDashboardSection" class="space-y-4 hidden">
       
-      <!-- BỘ LỌC CHI PHÍ KÍNH MỜ -->
-      <div class="glass-card rounded-2xl p-4 space-y-3">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-            <i class="fa-solid fa-sliders text-indigo-400"></i> Bộ Lọc Dữ Liệu
+      <!-- BỘ LỌC CHI PHÍ TRẮNG SÁNG -->
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-filter text-blue-600"></i> Bộ Lọc Chi Phí
           </span>
-          <button onclick="resetFilters()" class="text-[11px] text-indigo-400 hover:underline">Mặc định</button>
+          <button onclick="resetFilters()" class="text-xs text-blue-600 font-semibold hover:underline">Mặc định</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Xe</label>
-            <select id="filterVehicle" onchange="renderDashboard()" class="w-full bg-dark-800 border border-slate-700/80 rounded-xl p-2.5 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Phương tiện</label>
+            <select id="filterVehicle" onchange="renderDashboard()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-500">
               <option value="ALL">Toàn bộ xe</option>
             </select>
           </div>
           <div>
-            <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Hạng mục</label>
-            <select id="filterCategory" onchange="renderDashboard()" class="w-full bg-dark-800 border border-slate-700/80 rounded-xl p-2.5 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+            <label class="block text-[11px] font-semibold text-slate-500 mb-1">Hạng mục</label>
+            <select id="filterCategory" onchange="renderDashboard()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-500">
               <option value="ALL">Tất cả chi phí</option>
               <option value="Xăng">Xăng</option>
               <option value="Điện">Điện</option>
@@ -236,42 +211,40 @@
         </div>
 
         <div>
-          <label class="block text-[10px] uppercase font-bold text-slate-500 mb-1">Kỳ báo cáo (Tháng)</label>
-          <input type="month" id="filterMonth" onchange="renderDashboard()" class="w-full bg-dark-800 border border-slate-700/80 rounded-xl p-2 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+          <label class="block text-[11px] font-semibold text-slate-500 mb-1">Tháng báo cáo</label>
+          <input type="month" id="filterMonth" onchange="renderDashboard()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:border-blue-500">
         </div>
       </div>
 
-      <!-- KPI METRIC CARDS -->
+      <!-- KPI METRIC CARDS TRẮNG SÁCH -->
       <div class="grid grid-cols-2 gap-3">
-        <div class="glass-card rounded-2xl p-4 relative overflow-hidden">
-          <div class="absolute -right-3 -top-3 w-16 h-16 bg-indigo-500/10 rounded-full blur-xl"></div>
-          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Tổng chi</span>
-          <span id="dashTotalCost" class="font-mono text-xl font-extrabold text-white block mt-1">0 đ</span>
-          <span id="dashRecordCount" class="text-[10px] text-indigo-400 font-semibold mt-1 block">0 giao dịch</span>
+        <div class="bg-white rounded-3xl p-4 border border-slate-200/80 card-shadow">
+          <span class="text-xs font-semibold text-slate-400 block">Tổng chi tiêu</span>
+          <span id="dashTotalCost" class="mono-font text-xl font-extrabold text-slate-900 block mt-1">0 đ</span>
+          <span id="dashRecordCount" class="text-[11px] text-blue-600 font-bold mt-1 block">0 khoản chi</span>
         </div>
-        <div class="glass-card rounded-2xl p-4 relative overflow-hidden">
-          <div class="absolute -right-3 -top-3 w-16 h-16 bg-emerald-500/10 rounded-full blur-xl"></div>
-          <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">Nhiên liệu</span>
-          <span id="dashFuelCost" class="font-mono text-xl font-extrabold text-emerald-400 block mt-1">0 đ</span>
-          <span id="dashFuelPct" class="text-[10px] text-slate-400 mt-1 block">0% tổng chi phí</span>
+        <div class="bg-white rounded-3xl p-4 border border-slate-200/80 card-shadow">
+          <span class="text-xs font-semibold text-slate-400 block">Tiền Xăng / Điện</span>
+          <span id="dashFuelCost" class="mono-font text-xl font-extrabold text-emerald-600 block mt-1">0 đ</span>
+          <span id="dashFuelPct" class="text-[11px] text-slate-500 font-semibold mt-1 block">0% tổng chi</span>
         </div>
       </div>
 
-      <!-- CƠ CẤU CHI TIÊU THANH TRƯỢT GRADIENT -->
-      <div class="glass-card rounded-2xl p-4">
-        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3 flex items-center gap-1.5">
-          <i class="fa-solid fa-chart-pie text-indigo-400"></i> Cơ cấu khoản chi
+      <!-- THANH TRƯỢT PHÂN TÍCH KHOẢN CHI -->
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3.5 flex items-center gap-1.5">
+          <i class="fa-solid fa-chart-pie text-blue-600"></i> Cơ cấu khoản chi
         </h3>
-        <div id="categoryBreakdown" class="space-y-2.5"></div>
+        <div id="categoryBreakdown" class="space-y-3"></div>
       </div>
 
-      <!-- LỊCH BIỂU DẠNG MILESTONE TIMELINE -->
-      <div class="glass-card rounded-2xl p-4">
-        <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-            <i class="fa-solid fa-timeline text-indigo-400"></i> Lịch Sử Phát Sinh Chi Phí
+      <!-- LỊCH BIỂU NHẬT KÝ THEO NGÀY -->
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow">
+        <div class="flex items-center justify-between mb-3.5 border-b border-slate-100 pb-2.5">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Lịch Sử Chi Phí
           </h3>
-          <span id="timelineCount" class="text-[10px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">0 mục</span>
+          <span id="timelineCount" class="text-[11px] font-bold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full">0 mục</span>
         </div>
         <div id="expenseTimeline" class="space-y-3"></div>
       </div>
@@ -280,53 +253,53 @@
 
   </main>
 
-  <!-- THANH BOTTOM NAVIGATION (DÀNH CHO ĐIỆN THOẠI) -->
-  <nav class="glass-card fixed bottom-0 left-0 right-0 z-40 border-t border-slate-800/80 px-6 py-2.5">
+  <!-- THANH BOTTOM NAVIGATION TRẮNG SÁCH -->
+  <nav class="bg-white/95 backdrop-blur-md fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 px-6 py-2">
     <div class="max-w-md mx-auto grid grid-cols-2 gap-4">
-      <button id="navRecordBtn" onclick="switchTab('record')" class="flex flex-col items-center gap-1 py-1 text-indigo-400 font-bold transition">
-        <i class="fa-solid fa-gas-pump text-base"></i>
-        <span class="text-[10px] tracking-wide uppercase">Cập nhật</span>
+      <button id="navRecordBtn" onclick="switchTab('record')" class="flex flex-col items-center gap-1 py-1 text-blue-600 font-bold transition">
+        <i class="fa-solid fa-pencil text-base"></i>
+        <span class="text-[11px] font-semibold">Cập nhật</span>
       </button>
-      <button id="navDashboardBtn" onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 py-1 text-slate-500 font-medium hover:text-slate-300 transition">
-        <i class="fa-solid fa-chart-line text-base"></i>
-        <span class="text-[10px] tracking-wide uppercase">Thống kê</span>
+      <button id="navDashboardBtn" onclick="switchTab('dashboard')" class="flex flex-col items-center gap-1 py-1 text-slate-400 font-semibold hover:text-slate-600 transition">
+        <i class="fa-solid fa-chart-simple text-base"></i>
+        <span class="text-[11px] font-semibold">Thống kê</span>
       </button>
     </div>
   </nav>
 
-  <!-- POPUP: THÊM XE MỚI -->
-  <div id="addVehicleModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-sm rounded-3xl p-5 border border-slate-700 shadow-2xl space-y-3.5">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-2.5">
-        <h3 class="font-extrabold text-white text-base flex items-center gap-2">
-          <i class="fa-solid fa-car-side text-indigo-400"></i> Thêm Phương Tiện
+  <!-- MODAL THÊM XE MỚI -->
+  <div id="addVehicleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 border border-slate-200 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+          <i class="fa-solid fa-car text-blue-600"></i> Thêm Xe Mới
         </h3>
-        <button onclick="closeAddVehicleModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+        <button onclick="closeAddVehicleModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
       
       <div>
-        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Tên xe / Dòng xe</label>
-        <input type="text" id="newVehName" placeholder="VD: Fadil, Evo Grand, SH 160..." class="w-full bg-dark-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:border-indigo-500 focus:outline-none">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Tên xe / Dòng xe</label>
+        <input type="text" id="newVehName" placeholder="VD: Fadil, Evo Grand, SH 160..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-medium focus:bg-white focus:border-blue-500 focus:outline-none">
       </div>
 
       <div>
-        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Biển kiểm soát</label>
-        <input type="text" id="newVehPlate" placeholder="VD: 15A-123.45" class="w-full bg-dark-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white uppercase font-mono tracking-wider focus:border-indigo-500 focus:outline-none">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Biển kiểm soát</label>
+        <input type="text" id="newVehPlate" placeholder="VD: 15A-123.45" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 uppercase mono-font font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
       </div>
 
-      <div class="grid grid-cols-2 gap-2">
+      <div class="grid grid-cols-2 gap-2.5">
         <div>
-          <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Phân loại</label>
-          <select id="newVehType" class="w-full bg-dark-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Phân loại</label>
+          <select id="newVehType" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-semibold focus:outline-none">
             <option value="CAR">Ô tô</option>
             <option value="MOTORBIKE">Xe máy</option>
           </select>
         </div>
         <div>
-          <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Động cơ</label>
-          <select id="newVehFuel" class="w-full bg-dark-800 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-200 focus:border-indigo-500 focus:outline-none">
+          <label class="block text-xs font-bold text-slate-700 mb-1">Động cơ</label>
+          <select id="newVehFuel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-semibold focus:outline-none">
             <option value="GAS">Xăng / Dầu</option>
             <option value="EV">Điện (EV)</option>
           </select>
@@ -334,20 +307,19 @@
       </div>
 
       <div>
-        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Số ODO hiện tại</label>
-        <input type="number" id="newVehOdo" placeholder="VD: 15000" class="w-full bg-dark-800 border border-slate-700 rounded-xl p-2.5 text-xs text-white font-mono focus:border-indigo-500 focus:outline-none">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Số ODO hiện tại (km)</label>
+        <input type="number" id="newVehOdo" placeholder="VD: 15000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 mono-font font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
       </div>
 
-      <div class="pt-2 flex gap-2">
-        <button onclick="closeAddVehicleModal()" class="w-1/2 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-bold transition">Hủy</button>
-        <button id="submitNewVehBtn" onclick="submitNewVehicle()" class="w-1/2 bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-xs font-bold transition glow-indigo">Tạo Xe</button>
+      <div class="pt-2 flex gap-2.5">
+        <button onclick="closeAddVehicleModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl text-xs font-bold transition">Hủy</button>
+        <button id="submitNewVehBtn" onclick="submitNewVehicle()" class="w-1/2 btn-gradient text-white py-3 rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition">Tạo Xe</button>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT XỬ LÝ DỮ LIỆU & GIAO DIỆN -->
+  <!-- SCRIPT LOGIC -->
   <script>
-    // URL VÀ KEY ĐÃ TỰ ĐỘNG NHÚNG CHUẨN XÁC
     const API_URL = "https://script.google.com/macros/s/AKfycbw7B0be9N10BgcfAtTX6E-13cZB9JiP6RDC77ZoIqasPEEfpee-4bpc-sPBxuquJTEd/exec";
 
     let vehiclesList = [];
@@ -380,9 +352,9 @@
         return JSON.parse(text);
       } catch (e) {
         if (text.includes("<!DOCTYPE") || text.includes("<html")) {
-          throw new Error("Google Apps Script đang yêu cầu đăng nhập. Hãy mở 'Who has access: Anyone' và tạo phiên bản New Version trong Apps Script.");
+          throw new Error("Apps Script yêu cầu đăng nhập. Hãy tạo New Version và đặt quyền Anyone.");
         }
-        throw new Error("Phản hồi lỗi: " + text.substring(0, 100));
+        throw new Error("Lỗi phản hồi: " + text.substring(0, 100));
       }
     }
 
@@ -393,14 +365,13 @@
       document.getElementById('tabRecordSection').classList.toggle('hidden', !isRecord);
       document.getElementById('tabDashboardSection').classList.toggle('hidden', isRecord);
 
-      // Cập nhật Bottom Navigation
       document.getElementById('navRecordBtn').className = isRecord 
-        ? "flex flex-col items-center gap-1 py-1 text-indigo-400 font-bold transition"
-        : "flex flex-col items-center gap-1 py-1 text-slate-500 font-medium hover:text-slate-300 transition";
+        ? "flex flex-col items-center gap-1 py-1 text-blue-600 font-bold transition"
+        : "flex flex-col items-center gap-1 py-1 text-slate-400 font-semibold hover:text-slate-600 transition";
 
       document.getElementById('navDashboardBtn').className = !isRecord 
-        ? "flex flex-col items-center gap-1 py-1 text-indigo-400 font-bold transition"
-        : "flex flex-col items-center gap-1 py-1 text-slate-500 font-medium hover:text-slate-300 transition";
+        ? "flex flex-col items-center gap-1 py-1 text-blue-600 font-bold transition"
+        : "flex flex-col items-center gap-1 py-1 text-slate-400 font-semibold hover:text-slate-600 transition";
 
       if (!isRecord) renderDashboard();
     }
@@ -435,7 +406,7 @@
       vehicles.forEach(v => {
         const opt = document.createElement("option");
         opt.value = v.id;
-        opt.textContent = `${v.name} • [${v.plate}]`;
+        opt.textContent = `${v.name} [${v.plate}]`;
         select.appendChild(opt);
       });
       onVehicleChange();
@@ -448,21 +419,21 @@
 
       if (!v) return;
 
-      // Cập nhật ODO & Badge
       document.getElementById("currentOdoDisplay").textContent = v.odo.toLocaleString();
       document.getElementById("odoInput").value = v.odo;
       
       const isEv = v.fuel === 'EV';
       document.getElementById("vehicleTypeBadge").innerHTML = isEv 
-        ? `<i class="fa-solid fa-bolt text-emerald-400"></i> EV` 
-        : `<i class="fa-solid fa-gas-pump text-amber-400"></i> Xăng`;
+        ? `<i class="fa-solid fa-bolt text-emerald-600 mr-1"></i> Xe Điện` 
+        : `<i class="fa-solid fa-gas-pump text-amber-600 mr-1"></i> Xe Xăng`;
       
       document.getElementById("fuelModeValue").innerHTML = isEv
         ? `<i class="fa-solid fa-bolt"></i> Xe Điện`
         : `<i class="fa-solid fa-gas-pump"></i> Xe Xăng`;
-      document.getElementById("fuelModeValue").className = isEv ? "text-xs font-bold text-emerald-400 flex items-center justify-end gap-1 mt-1" : "text-xs font-bold text-amber-400 flex items-center justify-end gap-1 mt-1";
+      document.getElementById("fuelModeValue").className = isEv 
+        ? "text-xs font-bold text-emerald-600 flex items-center justify-end gap-1.5 mt-1.5" 
+        : "text-xs font-bold text-amber-600 flex items-center justify-end gap-1.5 mt-1.5";
 
-      // Danh mục thích ứng chính xác 1 từ (Xăng hoặc Điện)
       catSelect.innerHTML = `<option value="">-- Chỉ lưu ODO (không có tiền) --</option>`;
       if (isEv) {
         catSelect.innerHTML += `
@@ -495,10 +466,10 @@
       container.innerHTML = "";
       alerts.forEach(a => {
         const isDanger = a.type === 'danger';
-        const bg = isDanger ? 'bg-rose-950/60 border-rose-500/40 text-rose-300' : 'bg-amber-950/60 border-amber-500/40 text-amber-300';
-        const icon = isDanger ? 'fa-triangle-exclamation' : 'fa-bell';
+        const bg = isDanger ? 'bg-red-50 border-red-200 text-red-700' : 'bg-amber-50 border-amber-200 text-amber-800';
+        const icon = isDanger ? 'fa-triangle-exclamation text-red-600' : 'fa-bell text-amber-600';
         container.innerHTML += `
-          <div class="p-3 rounded-xl border text-xs flex items-center gap-2.5 ${bg}">
+          <div class="p-3 rounded-2xl border text-xs flex items-center gap-2.5 ${bg}">
             <i class="fa-solid ${icon} shrink-0 text-sm"></i>
             <span class="font-medium">${a.text}</span>
           </div>
@@ -552,37 +523,35 @@
       const fuelPct = totalCost > 0 ? Math.round((fuelCost / totalCost) * 100) : 0;
       document.getElementById("dashFuelPct").textContent = `${fuelPct}% tổng chi`;
 
-      // Thanh trượt chi phí
       const catContainer = document.getElementById("categoryBreakdown");
       catContainer.innerHTML = "";
       if (totalCost === 0) {
-        catContainer.innerHTML = `<span class="text-slate-500 text-xs italic">Không có giao dịch trong kỳ này.</span>`;
+        catContainer.innerHTML = `<span class="text-slate-400 text-xs italic">Không có giao dịch trong kỳ này.</span>`;
       } else {
         for (const [cat, val] of Object.entries(catMap)) {
           const pct = Math.round((val / totalCost) * 100);
           catContainer.innerHTML += `
             <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-slate-300 font-medium">${cat}</span>
-                <span class="font-mono text-slate-400">${val.toLocaleString()} đ <strong class="text-indigo-400">(${pct}%)</strong></span>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-slate-700 font-semibold">${cat}</span>
+                <span class="mono-font text-slate-500">${val.toLocaleString()} đ <strong class="text-blue-600">(${pct}%)</strong></span>
               </div>
-              <div class="w-full bg-dark-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                <div class="bg-gradient-to-r from-indigo-500 to-cyan-500 h-2 rounded-full" style="width: ${pct}%"></div>
+              <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div class="bg-blue-600 h-2 rounded-full" style="width: ${pct}%"></div>
               </div>
             </div>
           `;
         }
       }
 
-      // Timeline lịch biểu
       const timelineContainer = document.getElementById("expenseTimeline");
       document.getElementById("timelineCount").textContent = `${filtered.length} mục`;
       timelineContainer.innerHTML = "";
 
       if (filtered.length === 0) {
         timelineContainer.innerHTML = `
-          <div class="text-center py-8 text-slate-500 text-xs">
-            <i class="fa-regular fa-calendar-xmark text-3xl mb-2 block text-slate-600"></i>
+          <div class="text-center py-8 text-slate-400 text-xs">
+            <i class="fa-regular fa-calendar-xmark text-3xl mb-2 block text-slate-300"></i>
             Chưa có phát sinh chi phí nào.
           </div>
         `;
@@ -597,28 +566,28 @@
         const vName = vInfo ? vInfo.name : item.vehicleId;
 
         let icon = "fa-receipt";
-        let iconColor = "text-slate-400 bg-slate-800";
-        if (item.category === "Xăng") { icon = "fa-gas-pump"; iconColor = "text-amber-400 bg-amber-950/60 border border-amber-500/30"; }
-        else if (item.category === "Điện") { icon = "fa-bolt"; iconColor = "text-emerald-400 bg-emerald-950/60 border border-emerald-500/30"; }
-        else if (item.category === "Bảo dưỡng") { icon = "fa-wrench"; iconColor = "text-indigo-400 bg-indigo-950/60 border border-indigo-500/30"; }
-        else if (item.category === "Rửa xe") { icon = "fa-soap"; iconColor = "text-cyan-400 bg-cyan-950/60 border border-cyan-500/30"; }
-        else if (item.category === "Cầu đường") { icon = "fa-road"; iconColor = "text-violet-400 bg-violet-950/60 border border-violet-500/30"; }
+        let iconBg = "text-slate-600 bg-slate-100";
+        if (item.category === "Xăng") { icon = "fa-gas-pump"; iconBg = "text-amber-600 bg-amber-50 border border-amber-200/50"; }
+        else if (item.category === "Điện") { icon = "fa-bolt"; iconBg = "text-emerald-600 bg-emerald-50 border border-emerald-200/50"; }
+        else if (item.category === "Bảo dưỡng") { icon = "fa-wrench"; iconBg = "text-blue-600 bg-blue-50 border border-blue-200/50"; }
+        else if (item.category === "Rửa xe") { icon = "fa-soap"; iconBg = "text-cyan-600 bg-cyan-50 border border-cyan-200/50"; }
+        else if (item.category === "Cầu đường") { icon = "fa-road"; iconBg = "text-indigo-600 bg-indigo-50 border border-indigo-200/50"; }
 
         timelineContainer.innerHTML += `
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-dark-800/60 border border-slate-800/80 hover:border-slate-700 transition">
-            <div class="w-9 h-9 rounded-xl ${iconColor} flex items-center justify-center shrink-0 text-sm">
+          <div class="flex items-start gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/60 hover:border-slate-300 transition">
+            <div class="w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center shrink-0 text-sm shadow-sm">
               <i class="fa-solid ${icon}"></i>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-baseline">
-                <span class="font-bold text-white text-xs truncate">${item.category} • ${vName}</span>
-                <span class="font-mono font-bold text-indigo-400 text-xs shrink-0">${item.amount.toLocaleString()} đ</span>
+                <span class="font-bold text-slate-900 text-xs truncate">${item.category} • ${vName}</span>
+                <span class="mono-font font-bold text-blue-600 text-xs shrink-0">${item.amount.toLocaleString()} đ</span>
               </div>
-              <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-2">
+              <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
                 <span><i class="fa-regular fa-clock"></i> ${dateStr} ${timeStr}</span>
-                ${item.odo ? `<span>• ODO: <strong class="text-slate-200 font-mono">${item.odo.toLocaleString()} km</strong></span>` : ''}
+                ${item.odo ? `<span>• ODO: <strong class="text-slate-700 mono-font">${item.odo.toLocaleString()} km</strong></span>` : ''}
               </div>
-              ${item.note ? `<div class="text-[11px] text-slate-300 mt-1.5 italic bg-dark-900/90 p-2 rounded-lg border border-slate-800/80">"${item.note}"</div>` : ''}
+              ${item.note ? `<div class="text-xs text-slate-600 mt-1.5 italic bg-white p-2 rounded-xl border border-slate-200/60">"${item.note}"</div>` : ''}
             </div>
           </div>
         `;
@@ -681,7 +650,7 @@
       preview.src = URL.createObjectURL(file);
       previewContainer.classList.remove("hidden");
       statusDiv.classList.remove("hidden");
-      statusDiv.innerHTML = `<i class="fa-solid fa-atom fa-spin text-indigo-400 mr-1.5"></i> Gemini AI đang phân tích mặt đồng hồ ODO...`;
+      statusDiv.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-blue-600 mr-1.5"></i> Gemini AI đang phân tích mặt đồng hồ ODO...`;
 
       const reader = new FileReader();
       reader.onload = function(e) {
@@ -706,14 +675,14 @@
             const res = await callBackend("processOdoImage", { base64Data: base64Data, mimeType: "image/jpeg" });
             if (res.success && res.odo) {
               document.getElementById("odoInput").value = res.odo;
-              statusDiv.className = "mt-3 text-center text-xs py-2.5 px-3 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300";
-              statusDiv.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-1.5"></i> Nhận diện chuẩn: <strong class="font-mono text-white text-sm">${res.odo.toLocaleString()} km</strong>`;
+              statusDiv.className = "mt-3 text-center text-xs py-2.5 px-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold";
+              statusDiv.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Đã nhận diện ODO: <strong class="mono-font text-slate-900 text-sm">${res.odo.toLocaleString()} km</strong>`;
             } else {
-              statusDiv.className = "mt-3 text-center text-xs py-2.5 px-3 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300";
-              statusDiv.innerHTML = `<i class="fa-solid fa-circle-question text-amber-400 mr-1.5"></i> Không đọc rõ ODO. Bạn hãy tự nhập số nhé.`;
+              statusDiv.className = "mt-3 text-center text-xs py-2.5 px-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 font-medium";
+              statusDiv.innerHTML = `<i class="fa-solid fa-circle-question text-amber-600 mr-1.5"></i> Không đọc rõ ODO. Bạn hãy kiểm tra lại nhé.`;
             }
           } catch (err) {
-            statusDiv.className = "mt-3 text-center text-xs py-2.5 px-3 rounded-xl bg-rose-950/60 border border-rose-500/40 text-rose-300";
+            statusDiv.className = "mt-3 text-center text-xs py-2.5 px-3 rounded-2xl bg-red-50 border border-red-200 text-red-700 font-medium";
             statusDiv.innerHTML = "Lỗi nhận diện ảnh: " + err.message;
           }
         };
@@ -733,12 +702,12 @@
 
       const saveBtn = document.getElementById("saveBtn");
       saveBtn.disabled = true;
-      saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang đồng bộ...`;
+      saveBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang lưu...`;
 
       try {
         const res = await callBackend("saveRecord", { vehicleId: vId, odo: odo, category: category, amount: amount, note: note });
         saveBtn.disabled = false;
-        saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk text-sm"></i> Lưu Bản Ghi Mới`;
+        saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Lưu Cập Nhật`;
 
         if (res.success) {
           document.getElementById("amountInput").value = "";
@@ -752,7 +721,7 @@
         }
       } catch (err) {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = `<i class="fa-solid fa-floppy-disk text-sm"></i> Lưu Bản Ghi Mới`;
+        saveBtn.innerHTML = `<i class="fa-solid fa-check"></i> Lưu Cập Nhật`;
         alert("Lỗi: " + err.message);
       }
     }
