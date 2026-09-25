@@ -372,9 +372,9 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbw7B0be9N10BgcfAtTX6E-13cZB9JiP6RDC77ZoIqasPEEfpee-4bpc-sPBxuquJTEd/exec";
 
-    // ẢNH MẪU XE FADIL XANH DƯƠNG VÀ EVO MÀU OLIU
-    const CAR_FADIL_BLUE = "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcSqKoU10Bdp0e8vPQlTpm25KF2SK-ELDXhgXQn4xYYkDK7FdAdSjS6DeTcSN8_U-aQrDlX64JzfpqGsFvc";
-    const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/products/evo-grand-xanh-olive-2.png?v=1754383189940";
+   // LINK ẢNH CHUẨN: FADIL XANH DƯƠNG (BIỂN TRẮNG CÁ NHÂN) & EVO XANH OLIU
+const CAR_FADIL_BLUE = "https://images2.thanhnien.vn/528068263637045248/2023/8/16/vinfast-fadil-16921609117621183210330.jpeg";
+const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/products/evo-grand-xanh-olive-2.png?v=1754383189940";
 
     let vehiclesList = [];
     let expensesList = [];
@@ -472,6 +472,7 @@
     }
 
     // CẬP NHẬT ẢNH XE VÀ DANH MỤC THÍCH ỨNG
+    // CẬP NHẬT ẢNH XE VÀ DANH MỤC THÍCH ỨNG
     function onVehicleChange() {
       const vId = document.getElementById("vehicleSelect").value;
       const v = vehiclesList.find(x => x.id === vId);
@@ -484,14 +485,20 @@
       document.getElementById("odoInput").value = v.odo;
       
       const isEv = v.fuel === 'EV';
-      const vNameLower = v.name.toLowerCase();
 
-      // Hiện ảnh xe tương ứng
-      if (isEv || vNameLower.includes("evo")) {
-        imgElem.src = BIKE_EVO_OLIVE;
+      // ==============================================================
+      // ĐOẠN TỰ ĐỘNG NHẬN DIỆN ẢNH XE NẰM Ở ĐÂY:
+      // ==============================================================
+      const vNameLower = (v.name + " " + (v.plate || "")).toLowerCase();
+
+      if (isEv || vNameLower.includes("evo") || vNameLower.includes("điện")) {
+        imgElem.src = BIKE_EVO_OLIVE; // Ảnh xe máy điện Evo xanh oliu
+      } else if (vNameLower.includes("fadil")) {
+        imgElem.src = CAR_FADIL_BLUE; // Ảnh Fadil xanh dương biển trắng
       } else {
-        imgElem.src = CAR_FADIL_BLUE;
+        imgElem.src = CAR_FADIL_BLUE; // Mặc định cho ô tô khác
       }
+      // ==============================================================
 
       document.getElementById("vehicleTypeBadge").innerHTML = isEv 
         ? `<i class="fa-solid fa-bolt text-emerald-600 mr-1"></i> Xe Điện` 
@@ -504,7 +511,7 @@
         ? "text-xs font-bold text-emerald-600 flex items-center gap-1.5 mt-1" 
         : "text-xs font-bold text-amber-600 flex items-center gap-1.5 mt-1";
 
-      // BỎ HẲN MỤC "CHỈ LƯU ODO", MẶC ĐỊNH CHỌN XĂNG HOẶC ĐIỆN
+      // Danh mục chi phí thích ứng theo xe
       if (isEv) {
         catSelect.innerHTML = `
           <option value="Điện" selected>⚡ Điện</option>
@@ -525,7 +532,6 @@
         `;
       }
     }
-
     function renderAlerts(alerts) {
       const container = document.getElementById("alertsContainer");
       if (!alerts || alerts.length === 0) {
