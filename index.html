@@ -2,19 +2,19 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Quản Lý Xe Cá Nhân</title>
+  <title>Quản Lý Xe & Chi Phí</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style> body { -webkit-tap-highlight-color: transparent; } </style>
 </head>
-<body class="bg-slate-100 font-sans pb-10">
+<body class="bg-slate-100 font-sans pb-24">
 
-  <!-- Header: Chỉ giữ DUY NHẤT 1 nút Thêm xe ở đây -->
+  <!-- Header -->
   <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-40">
     <div class="max-w-md mx-auto flex items-center justify-between">
       <h1 class="font-bold text-lg flex items-center gap-2">
-        <i class="fa-solid fa-car"></i> Quản Lý Xe
+        <i class="fa-solid fa-car"></i> Quản Lý Phương Tiện
       </h1>
       <div class="flex items-center gap-2">
         <button onclick="openAddVehicleModal()" class="bg-blue-700 hover:bg-blue-800 text-xs px-3 py-1.5 rounded-lg flex items-center gap-1 font-semibold border border-blue-500 shadow-sm active:scale-95 transition">
@@ -27,78 +27,168 @@
     </div>
   </header>
 
+  <!-- Thanh điều hướng Tab -->
+  <div class="max-w-md mx-auto p-4 pb-0">
+    <div class="flex bg-slate-200 p-1 rounded-xl">
+      <button id="tabRecordBtn" onclick="switchTab('record')" class="flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-600 shadow-sm flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-pen-to-square"></i> Cập nhật ODO & Chi phí
+      </button>
+      <button id="tabDashboardBtn" onclick="switchTab('dashboard')" class="flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-600 flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-chart-pie"></i> Dashboard & Lịch biểu
+      </button>
+    </div>
+  </div>
+
   <main class="max-w-md mx-auto p-4 space-y-4">
     
-    <!-- Cảnh báo bảo dưỡng / giấy tờ -->
+    <!-- Cảnh báo nếu có -->
     <div id="alertsContainer" class="space-y-2 hidden"></div>
 
-    <!-- Chọn xe (Đã xóa nút thừa, chỉ giữ dropdown) -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Phương tiện đang chọn</label>
-      <select id="vehicleSelect" onchange="onVehicleChange()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-slate-800 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
-        <option value="">Đang tải dữ liệu...</option>
-      </select>
-      <div id="vehicleDetails" class="mt-2 text-xs text-slate-500 flex justify-between"></div>
-    </div>
-
-    <!-- Đọc ODO bằng Camera / Thư viện ảnh -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Đọc ODO bằng ảnh (Gemini AI)</label>
-      
-      <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelected(this)">
-      <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleFileSelected(this)">
-
-      <div class="grid grid-cols-2 gap-3">
-        <button onclick="triggerCamera()" class="flex flex-col items-center justify-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-700 p-3 rounded-lg border border-blue-200 active:scale-95 transition">
-          <i class="fa-solid fa-camera text-xl"></i>
-          <span class="text-xs font-semibold">Chụp ODO ngay</span>
-        </button>
-        <button onclick="triggerGallery()" class="flex flex-col items-center justify-center gap-1 bg-slate-50 hover:bg-slate-100 text-slate-700 p-3 rounded-lg border border-slate-200 active:scale-95 transition">
-          <i class="fa-solid fa-images text-xl"></i>
-          <span class="text-xs font-semibold">Chọn từ thư viện</span>
-        </button>
+    <!-- ==================== TAB 1: NHẬP LIỆU ==================== -->
+    <div id="tabRecordSection" class="space-y-4">
+      <!-- Chọn xe -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Phương tiện đang chọn</label>
+        <select id="vehicleSelect" onchange="onVehicleChange()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-slate-800 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none">
+          <option value="">Đang tải dữ liệu...</option>
+        </select>
+        <div id="vehicleDetails" class="mt-2 text-xs text-slate-500 flex justify-between"></div>
       </div>
 
-      <div id="aiStatus" class="mt-3 hidden text-center text-xs py-2 px-3 rounded-lg bg-blue-50 text-blue-700"></div>
-      <div id="imagePreviewContainer" class="mt-2 hidden flex justify-center">
-        <img id="imagePreview" class="h-28 rounded-lg border object-cover shadow-sm">
-      </div>
-    </div>
+      <!-- Đọc ODO bằng Camera / Thư viện ảnh -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Đọc ODO bằng ảnh (Gemini AI)</label>
+        
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelected(this)">
+        <input type="file" id="galleryInput" accept="image/*" class="hidden" onchange="handleFileSelected(this)">
 
-    <!-- Nhập liệu ODO & Chi phí -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Số ODO (km)</label>
-        <div class="relative">
-          <input type="number" id="odoInput" placeholder="VD: 45200" class="w-full border border-slate-300 rounded-lg p-3 text-slate-800 font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none">
-          <span class="absolute right-3 top-3.5 text-xs text-slate-400 font-semibold">KM</span>
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="triggerCamera()" class="flex flex-col items-center justify-center gap-1 bg-blue-50 hover:bg-blue-100 text-blue-700 p-3 rounded-lg border border-blue-200 active:scale-95 transition">
+            <i class="fa-solid fa-camera text-xl"></i>
+            <span class="text-xs font-semibold">Chụp ODO ngay</span>
+          </button>
+          <button onclick="triggerGallery()" class="flex flex-col items-center justify-center gap-1 bg-slate-50 hover:bg-slate-100 text-slate-700 p-3 rounded-lg border border-slate-200 active:scale-95 transition">
+            <i class="fa-solid fa-images text-xl"></i>
+            <span class="text-xs font-semibold">Chọn từ thư viện</span>
+          </button>
+        </div>
+
+        <div id="aiStatus" class="mt-3 hidden text-center text-xs py-2 px-3 rounded-lg bg-blue-50 text-blue-700"></div>
+        <div id="imagePreviewContainer" class="mt-2 hidden flex justify-center">
+          <img id="imagePreview" class="h-28 rounded-lg border object-cover shadow-sm">
         </div>
       </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Hạng mục chi phí (nếu có)</label>
-        <select id="categorySelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
-        </select>
+      <!-- Nhập ODO & Chi phí -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Số ODO (km)</label>
+          <div class="relative">
+            <input type="number" id="odoInput" placeholder="VD: 45200" class="w-full border border-slate-300 rounded-lg p-3 text-slate-800 font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <span class="absolute right-3 top-3.5 text-xs text-slate-400 font-semibold">KM</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Hạng mục chi phí (nếu có)</label>
+          <select id="categorySelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-3 text-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Số tiền (VNĐ)</label>
+          <input type="number" id="amountInput" placeholder="VD: 500000" class="w-full border border-slate-300 rounded-lg p-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-600 mb-1">Ghi chú</label>
+          <input type="text" id="noteInput" placeholder="VD: Đổ 25L xăng 95, sạc đầy pin..." class="w-full border border-slate-300 rounded-lg p-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+        </div>
+
+        <button id="saveBtn" onclick="saveData()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg shadow active:scale-98 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-floppy-disk"></i> Lưu Cập Nhật
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 2: DASHBOARD & LỊCH BIỂU ==================== -->
+    <div id="tabDashboardSection" class="space-y-4 hidden">
+      
+      <!-- BỘ LỌC CHI PHÍ -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b pb-2">
+          <span class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-filter text-blue-600"></i> Bộ lọc chi phí
+          </span>
+          <button onclick="resetFilters()" class="text-xs text-blue-600 hover:underline">Đặt lại</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-500 mb-1">Xe</label>
+            <select id="filterVehicle" onchange="renderDashboard()" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-slate-50">
+              <option value="ALL">Tất cả xe</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-500 mb-1">Hạng mục</label>
+            <select id="filterCategory" onchange="renderDashboard()" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-slate-50">
+              <option value="ALL">Tất cả hạng mục</option>
+              <option value="Xăng">Xăng</option>
+              <option value="Điện">Điện</option>
+              <option value="Bảo dưỡng">Bảo dưỡng</option>
+              <option value="Rửa xe">Rửa xe</option>
+              <option value="Gửi xe">Gửi xe</option>
+              <option value="Cầu đường">Cầu đường</option>
+              <option value="Khác">Khác</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-medium text-slate-500 mb-1">Thời gian (Tháng/Năm)</label>
+          <input type="month" id="filterMonth" onchange="renderDashboard()" class="w-full border border-slate-300 rounded-lg p-2 text-xs bg-slate-50">
+        </div>
       </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Số tiền (VNĐ)</label>
-        <input type="number" id="amountInput" placeholder="VD: 500000" class="w-full border border-slate-300 rounded-lg p-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+      <!-- CÁC THẺ METRIC TỔNG QUAN -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
+          <span class="text-[11px] font-semibold text-slate-500 block">Tổng chi tiêu</span>
+          <span id="dashTotalCost" class="text-lg font-extrabold text-blue-600 block mt-0.5">0 đ</span>
+          <span id="dashRecordCount" class="text-[10px] text-slate-400 mt-1 block">0 giao dịch</span>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-slate-200">
+          <span class="text-[11px] font-semibold text-slate-500 block">Tiền Xăng / Điện</span>
+          <span id="dashFuelCost" class="text-lg font-extrabold text-emerald-600 block mt-0.5">0 đ</span>
+          <span id="dashFuelPct" class="text-[10px] text-slate-400 mt-1 block">0% tổng chi</span>
+        </div>
       </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Ghi chú</label>
-        <input type="text" id="noteInput" placeholder="VD: Đổ xăng 95, bảo dưỡng định kỳ..." class="w-full border border-slate-300 rounded-lg p-3 text-slate-800 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm">
+      <!-- PHÂN TÍCH THEO TỪNG HẠNG MỤC -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <h3 class="text-xs font-bold text-slate-700 uppercase mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-chart-column text-blue-600"></i> Cơ cấu chi tiêu
+        </h3>
+        <div id="categoryBreakdown" class="space-y-2 text-xs"></div>
       </div>
 
-      <button id="saveBtn" onclick="saveData()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg shadow active:scale-98 transition flex items-center justify-center gap-2">
-        <i class="fa-solid fa-floppy-disk"></i> Lưu Cập Nhật
-      </button>
+      <!-- LỊCH BIỂU & TIMELINE PHÁT SINH CHI PHÍ -->
+      <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div class="flex items-center justify-between mb-3 border-b pb-2">
+          <h3 class="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar-days text-blue-600"></i> Nhật ký chi phí theo ngày
+          </h3>
+          <span id="timelineCount" class="text-[11px] text-slate-400">0 mục</span>
+        </div>
+        <div id="expenseTimeline" class="space-y-3"></div>
+      </div>
+
     </div>
 
   </main>
 
-  <!-- POPUP: THÊM XE MỚI -->
+  <!-- MODAL THÊM XE MỚI -->
   <div id="addVehicleModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 shadow-xl space-y-3">
       <div class="flex justify-between items-center border-b pb-2">
@@ -147,13 +237,13 @@
 
   <script>
     // ==============================================================
-    // DÁN ĐƯỜNG DẪN WEB APP APPS SCRIPT CỦA BẠN VÀO ĐÂY
+    // LINK WEB APP APPS SCRIPT CỦA BẠN (ĐÃ ĐIỀN TỰ ĐỘNG)
     // ==============================================================
     const API_URL = "https://script.google.com/macros/s/AKfycbw7B0be9N10BgcfAtTX6E-13cZB9JiP6RDC77ZoIqasPEEfpee-4bpc-sPBxuquJTEd/exec";
 
     let vehiclesList = [];
+    let expensesList = [];
 
-    // Gọi API xử lý tự động chuyển hướng 302 của Apps Script
     async function callBackend(action, payload = {}) {
       const response = await fetch(API_URL, {
         method: "POST",
@@ -166,18 +256,39 @@
 
     window.onload = function() { loadData(); };
 
+    function switchTab(tab) {
+      const isRecord = tab === 'record';
+      document.getElementById('tabRecordSection').classList.toggle('hidden', !isRecord);
+      document.getElementById('tabDashboardSection').classList.toggle('hidden', isRecord);
+
+      document.getElementById('tabRecordBtn').className = isRecord 
+        ? "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-600 shadow-sm flex items-center justify-center gap-1.5"
+        : "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-600 flex items-center justify-center gap-1.5";
+      
+      document.getElementById('tabDashboardBtn').className = !isRecord 
+        ? "flex-1 py-2 text-xs font-bold rounded-lg transition bg-white text-blue-600 shadow-sm flex items-center justify-center gap-1.5"
+        : "flex-1 py-2 text-xs font-bold rounded-lg transition text-slate-600 flex items-center justify-center gap-1.5";
+
+      if (!isRecord) {
+        renderDashboard();
+      }
+    }
+
     async function loadData() {
       try {
         const res = await callBackend("getInitialData");
         if (res.success) {
           vehiclesList = res.vehicles;
+          expensesList = res.expenses || [];
           renderVehicles(vehiclesList);
           renderAlerts(res.alerts);
+          populateFilterVehicles();
+          renderDashboard();
         } else {
           alert("Lỗi dữ liệu: " + res.error);
         }
       } catch (err) {
-        alert("Không thể kết nối đến Backend: " + err.message);
+        alert("Không thể kết nối Backend: " + err.message);
       }
     }
 
@@ -185,7 +296,7 @@
       const select = document.getElementById("vehicleSelect");
       select.innerHTML = "";
       if (vehicles.length === 0) {
-        select.innerHTML = '<option value="">Chưa có xe. Bấm nút "+ Thêm xe" góc trên!</option>';
+        select.innerHTML = '<option value="">Chưa có xe. Bấm "+ Thêm xe" ở góc trên!</option>';
         document.getElementById("vehicleDetails").innerHTML = "";
         onVehicleChange();
         return;
@@ -260,6 +371,128 @@
       });
     }
 
+    function populateFilterVehicles() {
+      const filterVeh = document.getElementById("filterVehicle");
+      filterVeh.innerHTML = `<option value="ALL">Tất cả xe</option>`;
+      vehiclesList.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v.id;
+        opt.textContent = `${v.name} (${v.plate})`;
+        filterVeh.appendChild(opt);
+      });
+    }
+
+    function resetFilters() {
+      document.getElementById("filterVehicle").value = "ALL";
+      document.getElementById("filterCategory").value = "ALL";
+      document.getElementById("filterMonth").value = "";
+      renderDashboard();
+    }
+
+    function renderDashboard() {
+      const selectedVeh = document.getElementById("filterVehicle").value;
+      const selectedCat = document.getElementById("filterCategory").value;
+      const selectedMonth = document.getElementById("filterMonth").value;
+
+      const filtered = expensesList.filter(item => {
+        if (selectedVeh !== "ALL" && item.vehicleId !== selectedVeh) return false;
+        if (selectedCat !== "ALL" && item.category !== selectedCat) return false;
+        if (selectedMonth) {
+          const itemMonth = item.timestamp.substring(0, 7);
+          if (itemMonth !== selectedMonth) return false;
+        }
+        return true;
+      });
+
+      let totalCost = 0;
+      let fuelCost = 0;
+      const catMap = {};
+
+      filtered.forEach(item => {
+        totalCost += item.amount;
+        if (item.category === "Xăng" || item.category === "Điện") {
+          fuelCost += item.amount;
+        }
+        catMap[item.category] = (catMap[item.category] || 0) + item.amount;
+      });
+
+      document.getElementById("dashTotalCost").textContent = totalCost.toLocaleString() + " đ";
+      document.getElementById("dashRecordCount").textContent = `${filtered.length} giao dịch`;
+      document.getElementById("dashFuelCost").textContent = fuelCost.toLocaleString() + " đ";
+      const fuelPct = totalCost > 0 ? Math.round((fuelCost / totalCost) * 100) : 0;
+      document.getElementById("dashFuelPct").textContent = `${fuelPct}% tổng chi`;
+
+      const catContainer = document.getElementById("categoryBreakdown");
+      catContainer.innerHTML = "";
+      if (totalCost === 0) {
+        catContainer.innerHTML = `<span class="text-slate-400 italic">Không có dữ liệu chi tiêu trong kỳ lọc này.</span>`;
+      } else {
+        for (const [cat, val] of Object.entries(catMap)) {
+          const pct = Math.round((val / totalCost) * 100);
+          catContainer.innerHTML += `
+            <div>
+              <div class="flex justify-between mb-1">
+                <span class="font-medium text-slate-700">${cat}</span>
+                <span class="text-slate-500 font-semibold">${val.toLocaleString()} đ (${pct}%)</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-blue-600 h-1.5 rounded-full" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      const timelineContainer = document.getElementById("expenseTimeline");
+      document.getElementById("timelineCount").textContent = `${filtered.length} sự kiện`;
+      timelineContainer.innerHTML = "";
+
+      if (filtered.length === 0) {
+        timelineContainer.innerHTML = `
+          <div class="text-center py-6 text-slate-400 text-xs">
+            <i class="fa-regular fa-calendar-xmark text-2xl mb-1 block"></i>
+            Chưa có phát sinh chi phí nào phù hợp.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const dateObj = new Date(item.timestamp);
+        const dateFormatted = dateObj.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
+        const timeFormatted = dateObj.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+        const vInfo = vehiclesList.find(x => x.id === item.vehicleId);
+        const vName = vInfo ? vInfo.name : item.vehicleId;
+
+        let icon = "fa-tag";
+        let iconBg = "bg-slate-100 text-slate-600";
+        if (item.category === "Xăng") { icon = "fa-gas-pump"; iconBg = "bg-amber-100 text-amber-700"; }
+        else if (item.category === "Điện") { icon = "fa-bolt"; iconBg = "bg-emerald-100 text-emerald-700"; }
+        else if (item.category === "Bảo dưỡng") { icon = "fa-wrench"; iconBg = "bg-blue-100 text-blue-700"; }
+        else if (item.category === "Rửa xe") { icon = "fa-soap"; iconBg = "bg-cyan-100 text-cyan-700"; }
+        else if (item.category === "Cầu đường") { icon = "fa-road"; iconBg = "bg-indigo-100 text-indigo-700"; }
+
+        timelineContainer.innerHTML += `
+          <div class="flex items-start gap-3 p-3 rounded-lg border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition">
+            <div class="w-8 h-8 rounded-full ${iconBg} flex items-center justify-center shrink-0 mt-0.5 text-xs">
+              <i class="fa-solid ${icon}"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-start">
+                <span class="font-bold text-slate-800 text-xs truncate">${item.category} • ${vName}</span>
+                <span class="font-extrabold text-blue-600 text-xs shrink-0">${item.amount.toLocaleString()} đ</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2">
+                <span><i class="fa-regular fa-clock"></i> ${dateFormatted} ${timeFormatted}</span>
+                ${item.odo ? `<span>• ODO: <strong>${item.odo.toLocaleString()} km</strong></span>` : ''}
+              </div>
+              ${item.note ? `<div class="text-[11px] text-slate-600 mt-1 italic bg-white p-1.5 rounded border border-slate-200">"${item.note}"</div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+    }
+
     function openAddVehicleModal() { document.getElementById("addVehicleModal").classList.remove("hidden"); }
     function closeAddVehicleModal() { document.getElementById("addVehicleModal").classList.add("hidden"); }
 
@@ -270,10 +503,7 @@
       const fuel = document.getElementById("newVehFuel").value;
       const odo = document.getElementById("newVehOdo").value;
 
-      if (!name || !plate) {
-        alert("Vui lòng nhập tên xe và biển số!");
-        return;
-      }
+      if (!name || !plate) return alert("Vui lòng nhập tên xe và biển số!");
 
       const btn = document.getElementById("submitNewVehBtn");
       btn.disabled = true;
@@ -292,7 +522,7 @@
           alert("Tạo xe thành công!");
           loadData();
         } else {
-          alert("Lỗi từ máy chủ: " + res.error);
+          alert("Lỗi máy chủ: " + res.error);
         }
       } catch (err) {
         btn.disabled = false;
