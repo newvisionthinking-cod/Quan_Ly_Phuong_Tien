@@ -52,7 +52,7 @@
     <!-- ==================== TAB 1: NHẬP LIỆU ==================== -->
     <div id="tabRecordSection" class="space-y-4">
       
-      <!-- THẺ XE CÓ ẢNH THỰC TẾ (FADIL XANH / EVO OLIU) -->
+      <!-- THẺ XE (CHẠM VÀO ĐỂ TỰ ĐỔI ẢNH XE) -->
       <div class="bg-gradient-to-br from-white to-slate-50 rounded-3xl p-5 border border-slate-200/80 card-shadow relative overflow-hidden">
         
         <div class="flex items-center justify-between mb-3">
@@ -70,16 +70,28 @@
           <i class="fa-solid fa-chevron-down absolute right-4 top-4 text-xs text-slate-400 pointer-events-none"></i>
         </div>
 
-        <!-- KHUNG HÌNH ẢNH XE THỰC TẾ & THÔNG TIN ODO -->
+        <!-- KHUNG ẢNH XE THỰC TẾ & NÚT ĐỔI ẢNH -->
+        <input type="file" id="changeVehiclePhotoInput" accept="image/*" class="hidden" onchange="handleVehiclePhotoUpload(this)">
+
         <div class="bg-white rounded-2xl p-3 border border-slate-100 shadow-inner flex items-center gap-3.5">
-          <!-- Ảnh xe linh hoạt theo xe -->
-          <div class="w-20 h-20 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 shrink-0 flex items-center justify-center p-1">
-            <img id="vehicleImage" src="" alt="Ảnh xe" class="w-full h-full object-contain">
+          <!-- Ảnh xe có icon camera nhỏ góc dưới để đổi ảnh nhanh -->
+          <div class="relative w-24 h-20 rounded-xl overflow-hidden bg-slate-50 border border-slate-200/80 shrink-0 group cursor-pointer" onclick="document.getElementById('changeVehiclePhotoInput').click()" title="Bấm để đổi ảnh xe">
+            <img id="vehicleImage" src="" alt="Ảnh xe" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-80 group-hover:opacity-100 transition">
+              <span class="w-6 h-6 rounded-full bg-white/90 text-slate-700 flex items-center justify-center text-[10px] shadow">
+                <i class="fa-solid fa-camera"></i>
+              </span>
+            </div>
           </div>
           
           <div class="flex-1 min-w-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Số ODO hiện tại</span>
-            <div class="flex items-baseline gap-1">
+            <div class="flex justify-between items-start">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Số ODO hiện tại</span>
+              <button onclick="document.getElementById('changeVehiclePhotoInput').click()" class="text-[10px] text-blue-600 font-semibold hover:underline">
+                Đổi ảnh xe
+              </button>
+            </div>
+            <div class="flex items-baseline gap-1 mt-0.5">
               <span id="currentOdoDisplay" class="mono-font text-2xl font-extrabold text-slate-900 truncate">0</span>
               <span class="text-xs font-bold text-blue-600 mono-font shrink-0">KM</span>
             </div>
@@ -125,16 +137,14 @@
         </div>
       </div>
 
-      <!-- FORM NHẬP CHI PHÍ & ODO (CÓ NGÀY VÀ ĐÃ BỎ "CHỈ LƯU ODO") -->
+      <!-- FORM NHẬP CHI PHÍ & ODO -->
       <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow space-y-3.5">
         
-        <!-- Ngày chi tiêu -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Ngày chi tiêu</label>
           <input type="date" id="expenseDateInput" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-800 font-semibold focus:bg-white focus:border-blue-500 focus:outline-none">
         </div>
 
-        <!-- Số ODO -->
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Số ODO (km)</label>
           <div class="relative">
@@ -147,7 +157,6 @@
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Hạng mục</label>
             <select id="categorySelect" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-800 font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
-              <!-- Mặc định Xăng hoặc Điện, không còn mục 'Chỉ lưu ODO' -->
             </select>
           </div>
           <div>
@@ -171,7 +180,7 @@
 
     </div>
 
-    <!-- ==================== TAB 2: DASHBOARD & LỊCH BIỂU (CÓ NÚT SỬA/XÓA) ==================== -->
+    <!-- ==================== TAB 2: DASHBOARD & LỊCH BIỂU ==================== -->
     <div id="tabDashboardSection" class="space-y-4 hidden">
       
       <!-- BỘ LỌC CHI PHÍ -->
@@ -233,7 +242,7 @@
         <div id="categoryBreakdown" class="space-y-3"></div>
       </div>
 
-      <!-- LỊCH SỬ CHI PHÍ VỚI NÚT SỬA & XÓA -->
+      <!-- LỊCH SỬ CHI PHÍ -->
       <div class="bg-white rounded-3xl p-5 border border-slate-200/80 card-shadow">
         <div class="flex items-center justify-between mb-3.5 border-b border-slate-100 pb-2.5">
           <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
@@ -262,9 +271,9 @@
     </div>
   </nav>
 
-  <!-- MODAL: THÊM XE MỚI -->
+  <!-- MODAL: THÊM XE MỚI (CÓ CHỌN ẢNH XE) -->
   <div id="addVehicleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 border border-slate-200 shadow-2xl space-y-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 border border-slate-200 shadow-2xl space-y-3.5">
       <div class="flex justify-between items-center border-b border-slate-100 pb-3">
         <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
           <i class="fa-solid fa-car text-blue-600"></i> Thêm Xe Mới
@@ -273,28 +282,34 @@
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
+
+      <!-- Chọn ảnh xe khi tạo mới -->
+      <div>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Ảnh xe (Chụp hoặc chọn ảnh)</label>
+        <input type="file" id="newVehPhotoInput" accept="image/*" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-xs text-slate-600">
+      </div>
       
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Tên xe / Dòng xe</label>
-        <input type="text" id="newVehName" placeholder="VD: Fadil, Evo Grand..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-medium focus:bg-white focus:border-blue-500 focus:outline-none">
+        <input type="text" id="newVehName" placeholder="VD: Fadil, Evo Grand..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 font-medium focus:bg-white focus:border-blue-500 focus:outline-none">
       </div>
 
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Biển kiểm soát</label>
-        <input type="text" id="newVehPlate" placeholder="VD: 15A-123.45" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 uppercase mono-font font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
+        <input type="text" id="newVehPlate" placeholder="VD: 15A-123.45" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 uppercase mono-font font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
       </div>
 
       <div class="grid grid-cols-2 gap-2.5">
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Phân loại</label>
-          <select id="newVehType" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-semibold focus:outline-none">
+          <select id="newVehType" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 font-semibold focus:outline-none">
             <option value="CAR">Ô tô</option>
             <option value="MOTORBIKE">Xe máy</option>
           </select>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Động cơ</label>
-          <select id="newVehFuel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-semibold focus:outline-none">
+          <select id="newVehFuel" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 font-semibold focus:outline-none">
             <option value="GAS">Xăng / Dầu</option>
             <option value="EV">Điện (EV)</option>
           </select>
@@ -303,7 +318,7 @@
 
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Số ODO hiện tại (km)</label>
-        <input type="number" id="newVehOdo" placeholder="VD: 15000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 mono-font font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
+        <input type="number" id="newVehOdo" placeholder="VD: 15000" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 mono-font font-bold focus:bg-white focus:border-blue-500 focus:outline-none">
       </div>
 
       <div class="pt-2 flex gap-2.5">
@@ -372,9 +387,9 @@
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbw7B0be9N10BgcfAtTX6E-13cZB9JiP6RDC77ZoIqasPEEfpee-4bpc-sPBxuquJTEd/exec";
 
-   // LINK ẢNH CHUẨN: FADIL XANH DƯƠNG (BIỂN TRẮNG CÁ NHÂN) & EVO XANH OLIU
-const CAR_FADIL_BLUE = "https://images2.thanhnien.vn/528068263637045248/2023/8/16/vinfast-fadil-16921609117621183210330.jpeg";
-const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/products/evo-grand-xanh-olive-2.png?v=1754383189940";
+    // ẢNH MẪU DỰ PHÒNG KHI XE CHƯA TẢI ẢNH LÊN
+    const DEFAULT_CAR_FADIL = "https://images2.thanhnien.vn/528068263637045248/2023/8/16/vinfast-fadil-16921609117621183210330.jpeg";
+    const DEFAULT_BIKE_EVO = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/products/evo-grand-xanh-olive-2.png?v=1754383189940";
 
     let vehiclesList = [];
     let expensesList = [];
@@ -413,7 +428,6 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
     }
 
     window.onload = function() {
-      // Đặt mặc định ngày hiện tại cho input ngày
       document.getElementById("expenseDateInput").value = new Date().toISOString().substring(0, 10);
       loadData();
     };
@@ -454,12 +468,13 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
 
     function renderVehicles(vehicles) {
       const select = document.getElementById("vehicleSelect");
+      const currentSelected = select.value;
       select.innerHTML = "";
       if (vehicles.length === 0) {
         select.innerHTML = '<option value="">Chưa có xe. Bấm "+ Thêm xe" ở góc trên!</option>';
         document.getElementById("currentOdoDisplay").textContent = "0";
         document.getElementById("vehicleTypeBadge").textContent = "Trống";
-        document.getElementById("vehicleImage").src = CAR_FADIL_BLUE;
+        document.getElementById("vehicleImage").src = DEFAULT_CAR_FADIL;
         return;
       }
       vehicles.forEach(v => {
@@ -468,11 +483,13 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
         opt.textContent = `${v.name} [${v.plate}]`;
         select.appendChild(opt);
       });
+
+      if (currentSelected && vehicles.some(x => x.id === currentSelected)) {
+        select.value = currentSelected;
+      }
       onVehicleChange();
     }
 
-    // CẬP NHẬT ẢNH XE VÀ DANH MỤC THÍCH ỨNG
-    // CẬP NHẬT ẢNH XE VÀ DANH MỤC THÍCH ỨNG
     function onVehicleChange() {
       const vId = document.getElementById("vehicleSelect").value;
       const v = vehiclesList.find(x => x.id === vId);
@@ -485,20 +502,16 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
       document.getElementById("odoInput").value = v.odo;
       
       const isEv = v.fuel === 'EV';
-
-      // ==============================================================
-      // ĐOẠN TỰ ĐỘNG NHẬN DIỆN ẢNH XE NẰM Ở ĐÂY:
-      // ==============================================================
       const vNameLower = (v.name + " " + (v.plate || "")).toLowerCase();
 
-      if (isEv || vNameLower.includes("evo") || vNameLower.includes("điện")) {
-        imgElem.src = BIKE_EVO_OLIVE; // Ảnh xe máy điện Evo xanh oliu
-      } else if (vNameLower.includes("fadil")) {
-        imgElem.src = CAR_FADIL_BLUE; // Ảnh Fadil xanh dương biển trắng
+      // NẾU CÓ ẢNH RIÊNG THÌ DÙNG ẢNH RIÊNG, KHÔNG THÌ LẤY ẢNH MẪU DỰ PHÒNG
+      if (v.imageUrl) {
+        imgElem.src = v.imageUrl;
+      } else if (isEv || vNameLower.includes("evo") || vNameLower.includes("điện")) {
+        imgElem.src = DEFAULT_BIKE_EVO;
       } else {
-        imgElem.src = CAR_FADIL_BLUE; // Mặc định cho ô tô khác
+        imgElem.src = DEFAULT_CAR_FADIL;
       }
-      // ==============================================================
 
       document.getElementById("vehicleTypeBadge").innerHTML = isEv 
         ? `<i class="fa-solid fa-bolt text-emerald-600 mr-1"></i> Xe Điện` 
@@ -511,7 +524,6 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
         ? "text-xs font-bold text-emerald-600 flex items-center gap-1.5 mt-1" 
         : "text-xs font-bold text-amber-600 flex items-center gap-1.5 mt-1";
 
-      // Danh mục chi phí thích ứng theo xe
       if (isEv) {
         catSelect.innerHTML = `
           <option value="Điện" selected>⚡ Điện</option>
@@ -532,6 +544,56 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
         `;
       }
     }
+
+    // TẢI ẢNH XE LÊN GOOGLE DRIVE KHI NGƯỜI DÙNG BẤM VÀO ẢNH
+    function handleVehiclePhotoUpload(input) {
+      if (!input.files || input.files.length === 0) return;
+      const vId = document.getElementById("vehicleSelect").value;
+      if (!vId) return alert("Vui lòng chọn xe trước!");
+
+      const file = input.files[0];
+      const imgElem = document.getElementById("vehicleImage");
+      imgElem.src = URL.createObjectURL(file); // Hiển thị tạm preview
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = async function() {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1000;
+          let width = img.width;
+          let height = img.height;
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const base64Data = canvas.toDataURL("image/jpeg", 0.75).split(",")[1];
+
+          try {
+            const res = await callBackend("uploadVehicleImage", { vehicleId: vId, base64Data: base64Data });
+            if (res.success && res.imageUrl) {
+              alert("Đã cập nhật ảnh xe thành công!");
+              // Cập nhật lại danh sách bộ nhớ cục bộ
+              const targetVeh = vehiclesList.find(x => x.id === vId);
+              if (targetVeh) targetVeh.imageUrl = res.imageUrl;
+              imgElem.src = res.imageUrl;
+            } else {
+              alert("Lỗi tải ảnh: " + res.error);
+            }
+          } catch (err) {
+            alert("Lỗi tải ảnh: " + err.message);
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     function renderAlerts(alerts) {
       const container = document.getElementById("alertsContainer");
       if (!alerts || alerts.length === 0) {
@@ -620,7 +682,6 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
         }
       }
 
-      // RENDER TIMELINE VỚI NÚT SỬA & XÓA
       const timelineContainer = document.getElementById("expenseTimeline");
       document.getElementById("timelineCount").textContent = `${filtered.length} mục`;
       timelineContainer.innerHTML = "";
@@ -666,7 +727,6 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
               ${item.note ? `<div class="text-xs text-slate-600 mt-1 italic bg-white p-2 rounded-xl border border-slate-200/60">"${item.note}"</div>` : ''}
             </div>
             
-            <!-- Cụm nút Sửa & Xóa -->
             <div class="flex flex-col gap-1.5 shrink-0 pl-1 border-l border-slate-200">
               <button onclick="openEditModal(${item.rowId})" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-blue-600 flex items-center justify-center text-xs transition" title="Chỉnh sửa">
                 <i class="fa-solid fa-pen"></i>
@@ -680,7 +740,6 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
       });
     }
 
-    // ==================== XỬ LÝ SỬA & XÓA CHI PHÍ ====================
     function openEditModal(rowId) {
       const item = expensesList.find(x => x.rowId === rowId);
       if (!item) return;
@@ -744,7 +803,6 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
       }
     }
 
-    // ==================== CÁC HÀM FORM VÀ ẢNH ====================
     function openAddVehicleModal() { document.getElementById("addVehicleModal").classList.remove("hidden"); }
     function closeAddVehicleModal() { document.getElementById("addVehicleModal").classList.add("hidden"); }
 
@@ -754,6 +812,7 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
       const type = document.getElementById("newVehType").value;
       const fuel = document.getElementById("newVehFuel").value;
       const odo = document.getElementById("newVehOdo").value;
+      const photoInput = document.getElementById("newVehPhotoInput");
 
       if (!name || !plate) return alert("Vui lòng điền tên xe và biển số!");
 
@@ -761,8 +820,13 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
       btn.disabled = true;
       btn.innerText = "Đang lưu...";
 
+      let imageBase64 = "";
+      if (photoInput.files && photoInput.files.length > 0) {
+        imageBase64 = await readFileAsCompressedBase64(photoInput.files[0]);
+      }
+
       try {
-        const res = await callBackend("addNewVehicle", { name, plate, type, fuel, odo });
+        const res = await callBackend("addNewVehicle", { name, plate, type, fuel, odo, imageBase64 });
         btn.disabled = false;
         btn.innerText = "Tạo Xe";
         if (res.success) {
@@ -770,6 +834,7 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
           document.getElementById("newVehName").value = "";
           document.getElementById("newVehPlate").value = "";
           document.getElementById("newVehOdo").value = "";
+          document.getElementById("newVehPhotoInput").value = "";
           loadData();
         } else {
           alert("Lỗi: " + res.error);
@@ -779,6 +844,32 @@ const BIKE_EVO_OLIVE = "https://bizweb.dktcdn.net/thumb/grande/100/557/616/produ
         btn.innerText = "Tạo Xe";
         alert("Lỗi kết nối: " + err.message);
       }
+    }
+
+    function readFileAsCompressedBase64(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            const MAX_WIDTH = 1000;
+            let width = img.width;
+            let height = img.height;
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL("image/jpeg", 0.75).split(",")[1]);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
     }
 
     function triggerCamera() {
